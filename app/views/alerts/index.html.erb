@@ -1,0 +1,84 @@
+
+<%= turbo_frame_tag :main, data: { turbo_action: 'advance' } do %>
+  <!--%= render "shared/index_filter" %-->
+  <div data-controller="checkbox-select-all" class="bg-white shadow-md rounded mt-3">
+    <div class="bg-gray-100 p-1 shadow-lg">
+      <div class="flex flex-row scrollbar-hide">
+
+          <div class="p-1 lg:w-2/3">
+            <%= search_form_for @q, data: { turbo_frame: :results } do |f| %>
+              <div class="flex space-x-4 items-center"> <!-- Add a container for the checkbox and label -->
+                <%= f.search_field :title_or_asset_or_source_cont,
+                                    placeholder: "Filter",
+                                    oninput: 'this.form.requestSubmit()',
+                                    autofocus: true,
+                                    autocomplete: 'off',
+                                    class: "flex rounded-md border border-gray-200 px-3 py-1 lg:w-1/2 bg-white" %>
+                
+                <label class="flex items-center">
+                  <%= f.check_box :hide_responded, {class: "bg-gray-100 border-gray-300 rounded", oninput: 'this.form.requestSubmit()'}, true, false %>
+                    <div class="ml-2 flex text-xs font-medium text-gray-500">
+                      <span>Hide alerts containing issue</span>
+                    </div>
+                </label>
+              </div>
+            <% end %>
+          </div>
+
+        <div class="basis-1/2 justify-end flex p-1">
+          <div data-checkbox-select-all-target="actions" class="hidden">
+            <div class="hidden md:block">
+              <%= form_with(url: bulk_action_alerts_path, id: :bulk_actions_form, method: :patch, data: { turbo: "false" }, class: "flex space-x-2 py-1") do |f| %>
+                <%= f.button type: "submit", value: :csv do %>
+                  <i class="fa-solid fa-file-csv text-slate-600 px-1"></i>
+                <% end %>
+                <%= f.button type: "submit", value: :close do %>
+                    <i class="fa-regular fa-trash-can text-slate-700 px-1"></i>
+                <% end %>
+                <%= f.text_field :issue, placeholder: "comment or link", class: "px-3 py-1 text-xs rounded-l-md border border-gray-200 w-full bg-white relative left-3" %>
+                <%= f.button type: "submit", class: "px-3 bg-slate-500 text-white text-xs leading-tight rounded-r-md shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition" do %>
+                    <i class="fa-solid fa-feather-pointed"></i>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-h-[calc(100vh-4rem)] overflow-y-auto">
+    <%= turbo_frame_tag :results, data: { turbo_action: 'advance' } do %>
+        <table class="w-full border border-t-gray-300 table-auto md:table-fixed">
+          <thead>
+            <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-3">
+              <th class="py-3 px-2 text-left md:w-24">Severity</th>
+              <th class="py-3 px-3 text-left"><%= sort_link @q, :title, "Title", {}, { data: { turbo_frame: :results} } %></th>
+              <th class="py-3 px-4 text-left md:w-64"><%= sort_link @q, :asset, "Asset", {}, { data: { turbo_frame: :results} } %></th>
+              <th class="py-3 px-4 text-left md:w-52"><%= sort_link @q, :source, "Source", {}, { data: { turbo_frame: :results} } %></th>
+              <th class="py-3 px-4 text-left md:w-52"><%= sort_link @q, :issue, "Issue", {}, { data: { turbo_frame: :results} } %></th>
+              <!--th class="py-3 px-6 text-center">Attendant</th-->
+              <th class="py-3 px-6 content-end w-16">
+                  <%= check_box_tag "select all", 
+                                    nil, 
+                                    nil, 
+                                    {
+                                    data: { 
+                                      checkbox_select_all_target: "parent", 
+                                      action: "change->checkbox-select-all#toggleChildren change->checkbox-select-all#toggleActions" }, 
+                                    class: "bg-gray-100 border-gray-300 rounded" 
+                                    } %>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="alerts" class="text-gray-600 text-sm font-light">
+
+          </tbody>
+        </table>
+
+    <%= turbo_frame_tag :pagination, loading: :lazy,  data: { turbo_action: 'advance' },
+                        src: alerts_path(format: :turbo_stream, q: params[:q]&.to_unsafe_h) %>
+    <% end %>
+     </div>
+  </div>
+<% end %>
+

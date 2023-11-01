@@ -1,0 +1,13 @@
+<%= turbo_stream.append :alerts do %>
+  <% @alerts.each do |alert| %>
+      <%= render "alert", alert: alert %>
+  <% end %>
+<% end %>
+
+<% if @pagy.next.present? %>
+  <%= turbo_stream.replace :pagination do %>
+    <%= turbo_frame_tag :pagination, 
+                        loading: :lazy,
+                        src: alerts_path(format: :turbo_stream, page: @pagy.next, q: params[:q]&.to_unsafe_h) %>
+  <% end %>
+<% end %>

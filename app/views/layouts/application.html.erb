@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>ASAP</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div data-controller="dropdown" class="lg:fixed flex">
+      <div class="inline-flex items-center p-3 text-sm">
+        <button data-action="dropdown#toggle click@window->dropdown#hide" type="button">
+          <i class="fa-solid fa-bars transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block"></i>
+        </button>
+        <a href="https://<%= ENV['HOSTNAME'] %>" class="ml-2 md:mr-24">
+          <span class="self-center text-gray-600 text-md font-semibold sm:text-md">ASAP</span>
+        </a>
+        <div
+          data-dropdown-target="menu"
+          class="hidden transition transform origin-top-right absolute"
+          data-transition-enter-from="opacity-0 scale-95"
+          data-transition-enter-to="opacity-100 scale-100"
+          data-transition-leave-from="opacity-100 scale-100"
+          data-transition-leave-to="opacity-0 scale-95"
+        >
+          <ul class="space-y-1 font-medium pt-32 mx-auto">
+            <li>
+              <%= link_to root_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
+                <div class="inline-flex items-center text-sm">
+                  <%= content_tag(:span, "Alerts", class: "ml-2") %>
+                </div>
+              <% end %>
+            </li>
+            <!--li>
+              <%= link_to about_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
+                <div class="inline-flex items-center text-sm">
+                  <%= content_tag(:span, "FAQ", class: "ml-2") %>
+                </div>
+              <% end %>
+            </li-->
+            <li>
+              <%= link_to logout_path, data: { turbo_method: :post }, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
+                <div class="inline-flex items-center text-sm">
+                  <%= content_tag(:span, "Sign out", class: "ml-2") %>
+                </div>
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+      <main>
+        <div class="min-w-screen min-h-screen flex justify-center overflow-hidden">
+          <div class="w-full lg:w-5/6">     
+              <%= yield %>
+          </div>
+        </div> 
+      </main>
+  </body>
+
+</html>
+
+<style>
+/* remove if https://github.com/tailwindlabs/tailwindcss/pull/5732 gets released */
+/* Hide scrollbar */
+body::-webkit-scrollbar{
+  display: none; /* Chrome, Safari and Opera */
+}
+html, body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+</style>
