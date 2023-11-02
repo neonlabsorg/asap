@@ -99,3 +99,6 @@ gem "omniauth_openid_connect"
 
 # Redirect using POST method [https://github.com/vergilet/repost]
 gem 'repost'
+
+# Deployment tool [https://github.com/basecamp/kamal]
+gem 'kamal', "~> 1.0.0"
