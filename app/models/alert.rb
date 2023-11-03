@@ -27,10 +27,17 @@ class Alert < ApplicationRecord
     end
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["asset", "source", "title", "hide_responded"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   # this ransacker is created to make "Hide alerts containing issue" working. Do not remove!
   ransacker :hide_responded, formatter: proc { |v| v == true } do |parent|
     # Arel.sql("alerts.issue IS NOT NULL AND alerts.issue != ''")
   end
 
 end
-  
