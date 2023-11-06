@@ -22,7 +22,7 @@ module Asap
 
     # General configuration
     config.api_token                        = ENV.fetch("API_TOKEN") { Rails.application.credentials[:api_token] }
-    config.db_password                      = ENV.fetch("DB_PASSWORD") { Rails.application.credentials[:db_password] }
+    # config.db_password                      = ENV.fetch("DB_PASSWORD") { Rails.application.credentials[:db_password] }
 
     # Active Directory configuration
     config.ldap_host                        = ENV.fetch("LDAP_HOST") { "ldap.dummy.host" }

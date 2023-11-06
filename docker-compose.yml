@@ -1,0 +1,38 @@
+version: '3'
+services:
+  db:
+    image: postgres:14
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  app:
+    image: ghcr.io/asap-org/asap:latest
+    restart: unless-stopped
+    environment:
+      - RAILS_ENV=production
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - API_TOKEN=${API_TOKEN}
+      - AUTH_METHOD=${AUTH_METHOD}
+      - LDAP_HOST=${LDAP_HOST}
+      - LDAP_BASE=${LDAP_BASE}
+      - LDAP_USERNAME=${LDAP_USERNAME}
+      - LDAP_PASSWORD=${LDAP_PASSWORD}
+      - LDAP_USERS_FILTER='(&(objectCategory=Person)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))'
+      - LDAP_USERS_SEARCHBASE=
+      - OIDC_IDENTIFIER=${OIDC_IDENTIFIER}
+      - OIDC_SECRET_KEY=${OIDC_SECRET_KEY}
+      - OIDC_HOSTNAME=${OIDC_HOSTNAME}
+
+    volumes:
+      - app-storage:/rails/storage
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data: {}
+  app-storage: {}
