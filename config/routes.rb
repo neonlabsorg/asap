@@ -14,9 +14,6 @@ Rails.application.routes.draw do
   get '/auth/failure', to: 'sessions#failure'
   post '/logout', to: 'sessions#destroy', as: 'logout'
 
-  match "/404", via: :all, to: "errors#not_found"
-  match "/500", via: :all, to: "errors#internal_server_error"
-
   resources :alerts, only: %i[index show update] do
     collection do
       patch :bulk_action # bulk_action_alert_path
