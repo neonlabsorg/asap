@@ -360,7 +360,7 @@ DEPENDENCIES
   whenever (~> 1.0)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.2.0p0
 
 BUNDLED WITH
    2.3.26
