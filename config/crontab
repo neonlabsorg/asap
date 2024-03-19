@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+BASH_ENV=/rails/.cron.env
+
+*/10 * * * * cd /rails && bin/rails runner "require './lib/sync_users.rb'" > /proc/1/fd/1 2>&1
