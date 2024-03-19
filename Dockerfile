@@ -48,6 +48,15 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libvips postgresql-client cron && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Create a directory for certificates
+RUN mkdir -p /usr/local/share/ca-certificates
+
+# Copy all PEM files from the current directory to the certificate directory
+COPY config/*.crt /usr/local/share/ca-certificates/
+
+# Check if any PEM file exists before updating the certificate store
+RUN ls /usr/local/share/ca-certificates/*.crt >/dev/null 2>&1 && update-ca-certificates || true
+
 # Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
