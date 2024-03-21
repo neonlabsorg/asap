@@ -39,5 +39,15 @@ module Asap
       email:        :userPrincipalName
     }
 
+    # OpenID Connect configuration
+    config.oidc_hostname                    = ENV.fetch("OIDC_HOSTNAME") { "oidc.dummy.hostname" }
+    config.oidc_issuer                      = ENV.fetch("OIDC_ISSUER") { "oidc.dummy.issuer" }
+    config.oidc_authorization_endpoint      = ENV.fetch("OIDC_AUTHORIZATION_ENDPOINT") { "oidc.dummy.authorization_endpoint" }
+    config.oidc_token_endpoint              = ENV.fetch("OIDC_TOKEN_ENDPOINT") { "oidc.dummy.token_endpoint" }
+    config.oidc_userinfo_endpoint           = ENV.fetch("OIDC_USERINFO_ENDPOINT") { "oidc.dummy.userinfo_endpoint" }
+    config.oidc_identifier                  = ENV.fetch("OIDC_IDENTIFIER") { "oidc.dummy.identifier" }
+    config.oidc_secret                      = ENV.fetch("OIDC_SECRET") { "oidc.dummy.secret" }
+    config.oidc_redirect_uri                = ENV.fetch("OIDC_REDIRECT_URI") { "oidc.dummy.redirect_uri" }
+
   end
 end
