@@ -2,17 +2,17 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider  :developer if Rails.env.development?
   provider  :openid_connect,
             scope: ['openid', 'profile', 'email'],
-            issuer: Rails.application.config.oidc_issuer,
+            issuer: ENV['OIDC_ISSUER'],
             discovery: true,
             client_options: {
               port: 443,
               scheme: 'https',
-              host: Rails.application.config.oidc_hostname,
-              authorization_endpoint: Rails.application.config.oidc_authorization_endpoint,
-              token_endpoint: Rails.application.config.oidc_token_endpoint,
-              userinfo_endpoint: Rails.application.config.oidc_userinfo_endpoint,
-              identifier: Rails.application.config.oidc_identifier,
-              secret: Rails.application.config.oidc_secret,
-              redirect_uri: Rails.application.config.oidc_redirect_uri
+              host: ENV['OIDC_HOSTNAME'],
+              authorization_endpoint: ENV['OIDC_AUTHORIZATION_ENDPOINT'],
+              token_endpoint: ENV['OIDC_TOKEN_ENDPOINT'],
+              userinfo_endpoint: ENV['OIDC_USERINFO_ENDPOINT'],
+              identifier: ENV['OIDC_IDENTIFIER'],
+              secret: ENV['OIDC_SECRET'],
+              redirect_uri: ENV['OIDC_REDIRECT_URI']
             }
 end
