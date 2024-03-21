@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   end
 
   def auth_from_token
-    if request.headers['X-Api-Key'].present? && request.headers['X-Api-Key'] == Rails.application.credentials.api[:token]
+    if request.headers['X-Api-Key'].present? && request.headers['X-Api-Key'] == Rails.application.config.api_token
       true
     else
       render json: { 'code': 401, 'status': 'unauthorized' }, status: :unauthorized
