@@ -23,7 +23,7 @@ services:
       - LDAP_USERS_FILTER='(&(objectCategory=Person)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))'
       - LDAP_USERS_SEARCHBASE=
       - OIDC_IDENTIFIER=${OIDC_IDENTIFIER}
-      - OIDC_SECRET_KEY=${OIDC_SECRET_KEY}
+      - OIDC_SECRET=${OIDC_SECRET}
       - OIDC_HOSTNAME=${OIDC_HOSTNAME}
 
     volumes:
