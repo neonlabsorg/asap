@@ -68,14 +68,12 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-  
-  # gem 'capistrano'
-  # gem 'capistrano-rails'
-  # gem 'capistrano-passenger'
-  # gem 'capistrano-rbenv'
 
   # See https://github.com/bkeepers/dotenv
   gem 'dotenv-rails'
+
+  # Deployment tool [https://github.com/basecamp/kamal]
+  gem 'kamal', "~> 1.0.0"
 end
 
 group :test do
@@ -98,6 +96,3 @@ gem "omniauth_openid_connect"
 
 # Redirect using POST method [https://github.com/vergilet/repost]
 gem 'repost'
-
-# Deployment tool [https://github.com/basecamp/kamal]
-gem 'kamal', "~> 1.0.0"
