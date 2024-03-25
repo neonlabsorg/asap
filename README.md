@@ -1,8 +1,59 @@
 The application is a centralized registry of various security alerts. The alert may represent anything you can treat as potential security or privacy issue. You may think of the app as a dashboard of alerts, where you have convinient way to respond to every single alert or bunch of alerts.
 
-## How to install
+## Installation
 
-TBD
+Clone repository and deploy with [Kamal](https://kamal-deploy.org/):
+
+1. `git clone https://github.com/asap-org/asap.git`
+2. install Kamal with `gem install kamal` or `bundle install`
+3. `kamal init`
+4. prepare configuration. See next section.
+4. configure deploy.yml and run `kamal setup`. See deploy.example.yml
+
+If initial deployment fails, simply run `kamal remove`, fix deploy.yml and run `kamal setup` again.
+
+Run `kamal deploy` for further deployments and updates.
+
+## Configuration
+
+Possible settings are defined via environment variables. Please see .env.example.
+
+Do not forget running `kamal env push` in case of changes
+
+## Authentication
+
+#### LDAP
+This method uses simple LDAP bind and requires integration with LDAP/AD domain. Set up following variables:
+
+    AUTH_METHOD: ldap
+    - LDAP_HOST
+    - LDAP_BASE
+    - LDAP_USERNAME
+    - LDAP_PASSWORD
+    - LDAP_USERS_FILTER
+    - LDAP_USERS_SEARCHBASE
+
+#### SSO
+You can set up SSO with OpenID connect
+
+    AUTH_METHOD: sso
+    - OIDC_HOSTNAME
+    - OIDC_ISSUER
+    - OIDC_AUTHORIZATION_ENDPOINT
+    - OIDC_TOKEN_ENDPOINT
+    - OIDC_USERINFO_ENDPOINT
+    - OIDC_IDENTIFIER
+    - OIDC_SECRET
+    - OIDC_REDIRECT_URI
+
+#### noauth
+This method can be used only in development mode
+
+    AUTH_METHOD: noauth
+
+## Authorization
+
+db/seeds.rb creates default account for you but this only makes sense for noauth method. For better user management you may want to define LDAP_USERS_SEARCHBASE to have authorized users provisioned by cron task (see deploy.example.yml)
 
 ## How to create alert?
 
@@ -46,7 +97,3 @@ https://asap.mydomain.com/api/v1/arrange_alerts
 
 ## How to respond to alert?
 You may assign a ticket to an alert by setting a link to the issue field in UI. Otherise, it's just a string which may be used as a short note or comment. Also if you have a guides/runbooks for you alerts you may put a link to remediation field when posting an alert.
-
-## TODO
- - Dockerize the application
- - Implement tests
