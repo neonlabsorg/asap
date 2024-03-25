@@ -1,0 +1,124 @@
+# This deployment example is perfectly fits for deploying on machine in a network using corporate CA.
+#
+# - it assumes you have private network for Docker created in advance: `docker network create --driver bridge private`
+# - it assumes you have directory /etc/ssl/asap/certs/ containing private key and certificate signed with your corp CA
+# - it assumes you have /etc/ssl/asap/dyn.yml with following content
+#     tls:
+#       certificates:
+#         - certFile: /etc/traefik/certs/web.crt
+#           keyFile: /etc/traefik/certs/privkey.pem
+#
+# Deploying public instance with Let's encrypt certs is even simpler, see Kamal guides.
+#
+# For user provisionning, this deploys separate container for sync_users.rb
+
+service: asap
+
+# Your image name.
+image: repo_name/asap
+
+registry:
+  # Specify the registry server, if you're not using Docker Hub
+  # server: registry.digitalocean.com / ghcr.io / ...
+  server: ghcr.io
+  username: sa_security_team
+  # Always use an access token rather than real password when possible.
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+servers:
+  web:
+    hosts:
+      - asap.example.com
+    labels:
+      traefik.enable: true
+      traefik.http.routers.asap-web.rule: Host(`asap.example.com`)
+      traefik.http.routers.asap-web.entrypoints: websecure
+      traefik.http.routers.asap-web.tls: true
+    options:
+      network: "private"
+  cron:
+    hosts:
+      - asap.example.com
+    cmd: bash -c "cat config/crontab | crontab - && declare -p | grep -Ev '\b(BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID)\b' >> /rails/.cron.env && cron -f"
+    options:
+      user: root
+      network: "private"
+
+# Use a different ssh user than root
+# ssh:
+#   user: app
+
+# Inject ENV variables into containers (secrets come from .env).
+# Remember to run `kamal env push` after making changes!
+env:
+  clear:
+    RAILS_ENV: production
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+    DB_HOST: asap-db
+    HOSTNAME: asap.example.com
+    AUTH_METHOD: sso
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    - API_TOKEN
+    - OIDC_HOSTNAME
+    - OIDC_ISSUER
+    - OIDC_AUTHORIZATION_ENDPOINT
+    - OIDC_TOKEN_ENDPOINT
+    - OIDC_USERINFO_ENDPOINT
+    - OIDC_IDENTIFIER
+    - OIDC_SECRET
+    - OIDC_REDIRECT_URI
+    - LDAP_HOST
+    - LDAP_BASE
+    - LDAP_USERNAME
+    - LDAP_PASSWORD
+    - LDAP_USERS_FILTER
+    - LDAP_USERS_SEARCHBASE
+
+# Use accessory services (secrets come from .env).
+accessories:
+  db:
+    image: postgres:14.0
+    host: asap.example.com
+    env:
+      clear:
+        POSTGRES_USER: asap
+        POSTGRES_DB: asap_production
+      secret:
+        - POSTGRES_PASSWORD
+    files:
+      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - data:/var/lib/postgresql/data
+    options:
+      network: "private"
+
+traefik:
+  options:
+    volume:
+      - /etc/ssl/asap/certs:/etc/traefik/certs:ro
+      - /etc/ssl/asap/dyn.yml:/etc/traefik/dyn.yml
+    publish:
+      - "443:443"
+    network: "private"
+  args:
+    entryPoints.websecure.address: ":443"
+    log.level: INFO
+
+    entryPoints.web.http.redirections.entryPoint.to: websecure
+    entryPoints.web.http.redirections.entryPoint.scheme: https
+    entryPoints.web.http.redirections.entrypoint.permanent: true
+    providers.file.filename: /etc/traefik/dyn.yml
+
+builder:
+  args:
+    RUBY_VERSION: 3.2.0
+  remote:
+    arch: amd64
+
+healthcheck:
+  path: /login
+  port: 3000
