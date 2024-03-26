@@ -8,6 +8,8 @@
 #         - certFile: /etc/traefik/certs/web.crt
 #           keyFile: /etc/traefik/certs/privkey.pem
 #
+# If you want to add a corp root CA cert to system trust store, simply put PEM-formatted .crt file in config/ directory before deploy
+#
 # Deploying public instance with Let's encrypt certs is even simpler, see Kamal guides.
 #
 # For user provisionning, this deploys separate container for sync_users.rb
