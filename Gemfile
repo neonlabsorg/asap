@@ -86,8 +86,6 @@ gem "pagy", "~> 6.0"
 
 gem "ransack", "~> 4.1"
 
-gem "whenever", "~> 1.0"
-
 # Rack Middleware for authentications [https://github.com/omniauth/omniauth]
 gem "omniauth"
 gem "omniauth-rails_csrf_protection"
