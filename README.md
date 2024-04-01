@@ -1,5 +1,7 @@
 The application is a centralized registry of various security alerts. The alert may represent anything you can treat as potential security or privacy issue. You may think of the app as a dashboard of alerts, where you have convinient way to respond to every single alert or bunch of alerts.
 
+![Cat](asap-ui.example.png)
+
 ## Installation
 
 Clone repository and deploy with [Kamal](https://kamal-deploy.org/):
