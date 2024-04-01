@@ -2,12 +2,19 @@ The application is a centralized registry of various security alerts. The alert 
 
 ![Cat](asap-ui.example.png)
 
+## Development
+
+To run the app in development environment:
+```bash
+bundle install
+bin/dev
+```
+
 ## Installation
 
 Clone repository and deploy with [Kamal](https://kamal-deploy.org/):
 
-1. `git clone https://github.com/asap-org/asap.git`
-2. install Kamal with `gem install kamal` or `bundle install`
+1. `bundle install`
 3. `kamal init`
 4. prepare configuration. See next section.
 4. configure deploy.yml and run `kamal setup`. See deploy.example.yml
