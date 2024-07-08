@@ -1,18 +1,19 @@
 class AlertsController < ApplicationController
   before_action :authorize
   before_action :set_alert, only: %i[show edit update]
+  before_action :set_mode, only: %i[index]
   
   def index
-    search_params = params.permit(:format, :page, q: [:title_or_asset_or_source_cont, :s, :hide_responded])
+    search_params = params.permit(:format, :page, q: [:title_or_asset_or_source_cont, :s, :hide_responded, :history_mode])
     # @q = Alert.where(active: true).ransack(search_params[:q])
 
     # Determine if the checkbox is checked
     if params[:q] && params[:q][:hide_responded] == 'true'
       # Checkbox is checked, filter for alerts with a non-empty issue field
-      @q = Alert.where(active: true, issue: ['', nil]).ransack(search_params[:q])
+      @q = Alert.where(active: @active, issue: ['', nil]).ransack(search_params[:q])
     else
       # Checkbox is unchecked, filter for alerts with an empty issue field
-      @q = Alert.where(active: true).ransack(search_params[:q])
+      @q = Alert.where(active: @active).ransack(search_params[:q])
     end
 
     alerts = @q.result.by_severity.order(created_at: :desc)
@@ -32,6 +33,8 @@ class AlertsController < ApplicationController
 
     if params[:button] == 'close'
       @selected_alerts.update_all(active: :false, last_closed_at: Time.now, last_closed_by: current_user.displayname)
+    elsif params[:button] == 'open'
+      @selected_alerts.update_all(active: :true, updated_at: Time.now)
     # for other buttons, elsif should be added right here. Issue should be in the "end"
     elsif params[:button] == 'csv'
       csv = Alert.get_csv(@selected_alerts)
@@ -64,6 +67,10 @@ class AlertsController < ApplicationController
 
   def set_alert
     @alert = Alert.find(params[:id])
+  end
+
+  def set_mode
+    @active = params[:q]&.[](:history_mode) || true
   end
 
   def alert_params

@@ -28,7 +28,7 @@ class Alert < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["asset", "source", "title", "hide_responded"]
+    ["asset", "source", "title", "hide_responded", "history_mode"]
   end
 
   def self.ransackable_associations(auth_object = nil)
@@ -38,6 +38,11 @@ class Alert < ApplicationRecord
   # this ransacker is created to make "Hide alerts containing issue" working. Do not remove!
   ransacker :hide_responded, formatter: proc { |v| v == true } do |parent|
     # Arel.sql("alerts.issue IS NOT NULL AND alerts.issue != ''")
+  end
+
+  # this ransacker is created to make "Switch to history mode" working. Do not remove!
+  ransacker :history_mode, formatter: proc { |v| v == false } do |parent|
+    # pass
   end
 
 end
