@@ -10,6 +10,8 @@ bundle install
 bin/dev
 ```
 
+Note: it's expected that your postgres "trust" localhost Unix domain socket connections. Otherwise, modify config/database.yml
+
 ## Installation
 
 Clone repository and deploy with [Kamal](https://kamal-deploy.org/):
