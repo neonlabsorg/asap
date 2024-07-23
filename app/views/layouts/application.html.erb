@@ -36,13 +36,13 @@
                 </div>
               <% end %>
             </li>
-            <!--li>
-              <%= link_to about_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
+            <li>
+              <%= link_to lifetimes_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
                 <div class="inline-flex items-center text-sm">
-                  <%= content_tag(:span, "FAQ", class: "ml-2") %>
+                  <%= content_tag(:span, "Lifetimes", class: "ml-2") %>
                 </div>
               <% end %>
-            </li-->
+            </li>
             <li>
               <%= link_to logout_path, data: { turbo_method: :post }, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
                 <div class="inline-flex items-center text-sm">
@@ -58,7 +58,9 @@
       <main>
         <div class="min-w-screen min-h-screen flex justify-center overflow-hidden">
           <div class="w-full lg:w-5/6">     
-              <%= yield %>
+            <%= render partial: "shared/flash" %>
+            <%= yield %>
+            <%= turbo_frame_tag "remote_modal" %>
           </div>
         </div> 
       </main>

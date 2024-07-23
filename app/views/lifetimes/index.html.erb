@@ -1,0 +1,32 @@
+<div class="container max-w-xl mx-auto px-3 py-8 text-xs">
+  <div class="flex items-center sm:items-start sm:flex-row flex-col text-gray-900">
+    <div class="flex-grow sm:text-left text-center mt-2 sm:mt-0">
+      <h1 class="title-font font-bold text-sm">Lifetime configuration</h1>
+      <p class="text-xs">Set alerts expiration (in days) based on its source (watcher)</p>
+    </div>
+    <div class="flex-grow sm:text-left mt-2 sm:mt-1 justify-end flex">
+      <%= link_to "Create lifetime", new_lifetime_path, data: { turbo_frame: :main },  
+      class: 'px-2 py-1 text-xs font-medium text-center text-white bg-blue-700 rounded-sm hover:bg-blue-800' %>
+    </div>
+  </div>
+  
+  <ul class="py-8">
+    <% @lifetimes.each do |lifetime| %>
+      <li class="flex border-b border-gray-200 py-1 items-center">
+        <div class="w-3/4 px-2">
+          <p class="text-xs font-medium truncate">
+            <%= lifetime.source %>
+          </p>
+        </div>
+        <div class="w-1/4 px-2">
+          <div class="text-xs font-medium truncate inline-flex items-center">
+            <%= lifetime.alert_lifetime_days %> day(s) 
+            <%= button_to lifetime, method: :delete, data: { turbo: false }, class: "flex items-center text-red-900 px-3" do %>
+                <%= content_tag(:i, "close", class: "fa-solid fa-xmark") %>
+            <% end %>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>

@@ -12,7 +12,7 @@
 #
 # Deploying public instance with Let's encrypt certs is even simpler, see Kamal guides.
 #
-# For user provisionning, this deploys separate container for sync_users.rb
+# For user provisionning and other cron jobs (e.g. close_expired_alerts), this deploys separate container.
 
 service: asap
 

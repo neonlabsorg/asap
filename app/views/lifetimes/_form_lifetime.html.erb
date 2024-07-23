@@ -1,0 +1,29 @@
+<%= turbo_frame_tag :remote_modal_new_lifetime, target: :_top do %>
+  <div data-controller="modal" class="hidden fixed inset-0 overflow-y-auto flex items-center justify-center backdrop " style="z-index: 9999;">
+    <!-- Modal Card -->
+    <div class="m-1 bg-white rounded shadow max-h-screen w-full max-w-lg relative">
+      <!-- Close button moved to top right corner -->
+      <%= link_to lifetimes_path, data: { action: 'click->modal#close' }, class: 'absolute top-0 right-0 m-4' do %>
+        <%= content_tag(:i, "close", class: "fa-solid fa-xmark") %>
+      <% end %>
+      
+      <div class="p-6">
+        <%= form_with model: @lifetime, url: lifetimes_path(@lifetime), method: :post, data: {turbo: false} do |form| %>
+
+          <%= form.label :source, class: "block uppercase text-xs font-bold mb-2 required-label" %>
+          <%= form.text_field :source, class: "border-1 py-0.5 border-gray-200 rounded focus:ring-1 w-full" %>
+
+          <%= form.label :alert_lifetime_days, class: "block uppercase text-xs font-bold mb-2 mt-3 required-label" %>
+          <%= form.text_field :alert_lifetime_days, class: "border-1 py-0.5 border-gray-200 rounded focus:ring-1 w-full" %>
+
+          <div class="flex justify-end mt-6">
+            <div class="flex lg:flex-row lg:items-center">
+              <%= form.submit "Submit", class: "px-3 py-1 text-xs font-medium text-center text-white bg-blue-700 rounded-sm hover:bg-blue-800 w-20 h-6" %>
+            </div>
+          </div>
+        <% end %> 
+      </div>
+
+    </div>
+  </div>
+<% end %>

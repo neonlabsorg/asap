@@ -20,6 +20,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :lifetimes, only: %i[index new create destroy]
+
   # get '/login', to: 'sessions#new', as: 'login'
   # post '/login', to: 'sessions#create', as: 'new_session'
   # post '/logout', to: 'sessions#destroy', as: 'logout'
