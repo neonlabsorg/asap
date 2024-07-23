@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   end
 
   resources :lifetimes, only: %i[index new create destroy]
+  resources :audit_logs, only: %i[index]
 
   # get '/login', to: 'sessions#new', as: 'login'
   # post '/login', to: 'sessions#create', as: 'new_session'

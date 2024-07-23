@@ -44,6 +44,13 @@
               <% end %>
             </li>
             <li>
+              <%= link_to audit_logs_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
+                <div class="inline-flex items-center text-sm">
+                  <%= content_tag(:span, "Audit logs", class: "ml-2") %>
+                </div>
+              <% end %>
+            </li>
+            <li>
               <%= link_to logout_path, data: { turbo_method: :post }, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
                 <div class="inline-flex items-center text-sm">
                   <%= content_tag(:span, "Sign out", class: "ml-2") %>

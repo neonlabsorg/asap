@@ -42,8 +42,16 @@ class Api::V1::AlertsController < ApplicationController
   def handle_alert
     if @alert.active && alert_params[:active] == 'false'
       close_alert
+      AuditLog.create(
+        alert_id: @alert.id,
+        event_description: "Alert {title: #{@alert.title}, asset: #{@alert.asset}} has been closed by #{@alert.source}"
+      )
     elsif !@alert.active && alert_params[:active] == 'true'
       reopen_alert
+      AuditLog.create(
+        alert_id: @alert.id,
+        event_description: "Alert {title: #{@alert.title}, asset: #{@alert.asset}} has been re-opened by #{@alert.source}"
+      )
     else
       update_alert
     end
@@ -72,6 +80,10 @@ class Api::V1::AlertsController < ApplicationController
   def create_alert
     @alert = Alert.new(alert_params.merge(id: @uuid, last_detected_at: Time.now))
     if @alert.save
+      AuditLog.create(
+        alert_id: @alert.id,
+        event_description: "Alert {title: #{@alert.title}, asset: #{@alert.asset}} has been created by #{@alert.source}"
+      )
       render json: { data: @alert }, status: :created
     else
       render json: @alert.errors, status: :unprocessable_entity
@@ -85,6 +97,13 @@ class Api::V1::AlertsController < ApplicationController
     resolved_alerts = all_active_alerts - params[:current_alerts]
 
     return unless resolved_alerts.any?
+
+    resolved_alerts.each do |alert|
+      AuditLog.create(
+        alert_id: alert.id,
+        event_description: "Alert {title: #{alert.title}, asset: #{alert.asset}} has been closed by #{alert.source}"
+      )
+    end
 
     if Alert.where(id: resolved_alerts).update_all(
          last_closed_at: Time.now,

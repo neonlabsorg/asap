@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_12_085125) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_23_145543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -34,6 +34,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_12_085125) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "resurfaced", default: false
+  end
+
+  create_table "audit_logs", force: :cascade do |t|
+    t.uuid "alert_id"
+    t.text "event_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "lifetimes", force: :cascade do |t|

@@ -33,8 +33,20 @@ class AlertsController < ApplicationController
 
     if params[:button] == 'close'
       @selected_alerts.update_all(active: :false, last_closed_at: Time.now, last_closed_by: current_user.displayname)
+      @selected_alerts.each do |alert|
+        AuditLog.create(
+          alert_id: alert.id,
+          event_description: "Alert {title: #{alert.title}, asset: #{alert.asset}} has been closed by #{current_user.displayname}"
+        )
+      end
     elsif params[:button] == 'open'
       @selected_alerts.update_all(active: :true, updated_at: Time.now)
+      @selected_alerts.each do |alert|
+        AuditLog.create(
+          alert_id: alert.id,
+          event_description: "Alert {title: #{alert.title}, asset: #{alert.asset}} has been re-opened by #{current_user.displayname}"
+        )
+      end
     # for other buttons, elsif should be added right here. Issue should be in the "end"
     elsif params[:button] == 'csv'
       csv = Alert.get_csv(@selected_alerts)
