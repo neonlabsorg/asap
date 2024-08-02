@@ -94,9 +94,11 @@ class Api::V1::AlertsController < ApplicationController
     return unless params[:source].present?
 
     all_active_alerts = Alert.where(source: params[:source], active: true).ids
-    resolved_alerts = all_active_alerts - params[:current_alerts]
+    resolved_alerts_ids = all_active_alerts - params[:current_alerts]
 
-    return unless resolved_alerts.any?
+    return unless resolved_alerts_ids.any?
+  
+    resolved_alerts = Alert.where(id: resolved_alerts_ids)
 
     resolved_alerts.each do |alert|
       AuditLog.create(
