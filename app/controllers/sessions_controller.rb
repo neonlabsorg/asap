@@ -69,8 +69,8 @@ class SessionsController < ApplicationController
 
   def auth_sso
     auth = request.env['omniauth.auth']
-    id =  auth['uid'] # uid corresponds to sub claim
-    user = User.find_by(id: id)
+    email =  auth['extra']['raw_info']['email'] # uid corresponds to sub claim
+    user = User.find_by(email: email)
   end
 
   def auth_noauth
