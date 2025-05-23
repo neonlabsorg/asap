@@ -3,32 +3,53 @@ on:
   push:
 
 jobs:
-    set_build_id:
-        runs-on: ["self-hosted", "k8s-prod"]
-        steps:
-        - name: Generate build ID
-          id: prep
-          run: |
-            branch=${GITHUB_REF##*/}
-            sha=${GITHUB_SHA::8}
-            run_number=${GITHUB_RUN_NUMBER}
-            echo "BUILD_ID=${branch}-${sha}-${run_number}" >> $GITHUB_OUTPUT
-        outputs:
-            build_id: ${{ steps.prep.outputs.BUILD_ID }}
-    build:
-        runs-on: ["self-hosted", "k8s-prod"]
-        needs: set_build_id
-        steps:
-        - uses: actions/checkout@v4
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v2
-        - name: Login to Docker Hub
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
-        - name: Build and push
-          uses: docker/build-push-action@v6
-          with:
-            push: true
-            tags: neonlabsorg/asap:${{ needs.set_build_id.outputs.build_id }}
+  set_build_id:
+    runs-on: ["self-hosted", "k8s-prod"]
+    steps:
+    - name: Generate build ID
+      id: prep
+      run: |
+        branch=${GITHUB_REF##*/}
+        sha=${GITHUB_SHA::8}
+        run_number=${GITHUB_RUN_NUMBER}
+        echo "BUILD_ID=${branch}-${sha}-${run_number}" >> $GITHUB_OUTPUT
+    outputs:
+      build_id: ${{ steps.prep.outputs.BUILD_ID }}
+
+  build:
+    runs-on: ["self-hosted", "k8s-prod"]
+    needs: set_build_id
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Start BuildKit with custom MTU
+      run: |
+        docker run -d --name buildkitd-custom \
+          --privileged \
+          --network host \
+          -e BUILDKITD_FLAGS="--oci-worker-net=host" \
+          moby/buildkit:latest
+
+    - name: Create buildx builder
+      run: |
+        docker buildx create --name custombuilder --driver remote --driver-opt network=host --use
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        builder: custombuilder
+        push: true
+        tags: neonlabsorg/asap:${{ needs.set_build_id.outputs.build_id }}
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker buildx rm custombuilder || true
+        docker rm -f buildkitd-custom || true
+
