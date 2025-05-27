@@ -69,6 +69,13 @@ class SessionsController < ApplicationController
 
   def auth_sso
     auth = request.env['omniauth.auth']
+
+    ### Normally the matching identity should come from auth['extra']['raw_info']['email'] 
+    ### But if you need to alter it, do it here
+    ### for instance:
+    ### id =  auth['uid'] # uid corresponds to sub claim
+    ### user = User.find_by(id: id)
+
     email =  auth['extra']['raw_info']['email'] # uid corresponds to sub claim
     user = User.find_by(email: email)
   end
