@@ -25,6 +25,9 @@ If initial deployment fails, simply run `kamal remove`, fix deploy.yml and run `
 
 Run `kamal deploy` for further deployments and updates.
 
+## Kubernetes 
+When writing manifests for deploying to k8s, make sure you pass all the environment variables as it is in deploy.example.yml
+
 ## Configuration
 
 Possible settings are defined via environment variables. Please see .env.example.

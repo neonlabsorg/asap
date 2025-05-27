@@ -27,7 +27,9 @@ class Api::V1::AlertsController < ApplicationController
   private
 
   def generate_uuid
-    @uuid = Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, alert_params[:title] + alert_params[:asset])
+    title = alert_params[:title] || ''
+    asset = alert_params[:asset] || ''
+    @uuid = Digest::UUID.uuid_v3(Digest::UUID::DNS_NAMESPACE, title + asset)
   end
 
   def set_alert
