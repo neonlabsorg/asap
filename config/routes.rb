@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post '/alerts', to: 'alerts#create'
       post '/arrange_alerts', to: 'alerts#arrange_alerts'
+      resources :ip_addresses, only: [:index, :create, :update, :destroy]
     end
   end
 
