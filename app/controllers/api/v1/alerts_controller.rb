@@ -65,6 +65,7 @@ class Api::V1::AlertsController < ApplicationController
 
   def reopen_alert
     update_alert_attributes(alert_params.merge(last_detected_at: Time.now, active: true, resurfaced: true))
+    SlackNotificationService.notify_reopened_alert(@alert)
   end
 
   def update_alert
@@ -86,6 +87,7 @@ class Api::V1::AlertsController < ApplicationController
         alert_id: @alert.id,
         event_description: "Alert {title: #{@alert.title}, asset: #{@alert.asset}} has been created by #{@alert.source}"
       )
+      SlackNotificationService.notify_new_alert(@alert)
       render json: { data: @alert }, status: :created
     else
       render json: @alert.errors, status: :unprocessable_entity
