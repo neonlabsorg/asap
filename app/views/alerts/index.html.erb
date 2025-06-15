@@ -15,14 +15,14 @@
                                     autocomplete: 'off',
                                     class: "flex rounded-md border border-gray-200 px-3 py-1 lg:w-1/2 bg-white" %>
                 
-                <label class="flex items-center">
+                <label class="hidden md:flex items-center">
                   <%= f.check_box :hide_responded, {class: "bg-gray-100 border-gray-300 rounded", oninput: 'this.form.requestSubmit()'}, true, false %>
                     <div class="ml-2 flex text-xs font-medium text-gray-500">
                       <span>Hide alerts containing issue</span>
                     </div>
                 </label>
 
-                <label class="flex items-center">
+                <label class="hidden md:flex items-center">
                 <%= f.check_box :history_mode, {class: "bg-gray-100 border-gray-300 rounded", oninput: 'this.form.requestSubmit()'}, false, false %>
                   <div class="ml-2 flex text-xs font-medium text-gray-500">
                     <span>Switch to history mode</span>
@@ -59,16 +59,16 @@
 
     <div class="max-h-[calc(100vh-4rem)] overflow-y-auto">
     <%= turbo_frame_tag :results, data: { turbo_action: 'advance' } do %>
-        <table class="w-full border border-t-gray-300 table-auto md:table-fixed">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
           <thead>
-            <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-3">
-              <th class="py-3 px-2 text-left md:w-24">Severity</th>
+            <tr class="bg-gray-50 text-gray text-sm leading-3">
+              <th class="py-3 px-2 text-left md:w-24 hidden md:table-cell">Severity</th>
               <th class="py-3 px-3 text-left"><%= sort_link @q, :title, "Title", {}, { data: { turbo_frame: :results} } %></th>
               <th class="py-3 px-4 text-left md:w-64"><%= sort_link @q, :asset, "Asset", {}, { data: { turbo_frame: :results} } %></th>
-              <th class="py-3 px-4 text-left md:w-52"><%= sort_link @q, :source, "Source", {}, { data: { turbo_frame: :results} } %></th>
-              <th class="py-3 px-4 text-left md:w-52"><%= sort_link @q, :issue, "Issue", {}, { data: { turbo_frame: :results} } %></th>
-              <!--th class="py-3 px-6 text-center">Attendant</th-->
-              <th class="py-3 px-6 content-end w-16">
+              <th class="py-3 px-4 text-left md:w-52 hidden md:table-cell"><%= sort_link @q, :source, "Source", {}, { data: { turbo_frame: :results} } %></th>
+              <th class="py-3 px-4 text-left md:w-52 hidden md:table-cell"><%= sort_link @q, :issue, "Issue", {}, { data: { turbo_frame: :results} } %></th>
+              <th class="py-3 px-6 content-end w-16 hidden md:table-cell">
                   <%= check_box_tag "select all", 
                                     nil, 
                                     nil, 
@@ -85,7 +85,7 @@
 
           </tbody>
         </table>
-
+      </div>
     <%= turbo_frame_tag :pagination, loading: :lazy,  data: { turbo_action: 'advance' },
                         src: alerts_path(format: :turbo_stream, q: params[:q]&.to_unsafe_h) %>
     <% end %>

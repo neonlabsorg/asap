@@ -2,8 +2,9 @@
 
 import { application } from "controllers/application"
 
-import Dropdown from 'stimulus-dropdown'
-application.register('dropdown', Dropdown)
+// https://www.stimulus-components.com/docs/stimulus-reveal-controller
+import Reveal from 'stimulus-reveal-controller' 
+application.register('reveal', Reveal) 
 
 // Eager load all controllers defined in the import map under controllers/**/*_controller
 import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
