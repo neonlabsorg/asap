@@ -6,71 +6,79 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <div data-controller="dropdown" class="lg:fixed flex">
-      <div class="inline-flex items-center p-3 text-sm">
-        <button data-action="dropdown#toggle click@window->dropdown#hide" type="button">
-          <i class="fa-solid fa-bars transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block"></i>
-        </button>
-        <a href="https://<%= ENV['HOSTNAME'] %>" class="ml-2 md:mr-24">
-          <span class="self-center text-gray-600 text-md font-semibold sm:text-md">ASAP</span>
-        </a>
-        <div
-          data-dropdown-target="menu"
-          class="hidden transition transform origin-top-right absolute"
-          data-transition-enter-from="opacity-0 scale-95"
-          data-transition-enter-to="opacity-100 scale-100"
-          data-transition-leave-from="opacity-100 scale-100"
-          data-transition-leave-to="opacity-0 scale-95"
-        >
-          <ul class="space-y-1 font-medium pt-32 mx-auto">
-            <li>
-              <%= link_to root_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
-                <div class="inline-flex items-center text-sm">
-                  <%= content_tag(:span, "Alerts", class: "ml-2") %>
+  <body class="h-screen w-screen overflow-hidden">
+    <div data-controller="reveal" data-reveal-hidden-class="-translate-x-full" class="h-full w-full flex flex-col">
+      <header class="w-full bg-white border-b border-gray-200 py-1 relative z-50">
+        <div class="px-3 py-1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center justify-start">
+              <button data-action="click->reveal#toggle" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 mr-4">
+                <i class="material-icons">menu_open</i>
+              </button>
+              <a href="https://<%= ENV['HOSTNAME'] %>" class="flex">
+                <% app_name = 'ASAP' %>
+                <% if app_name %>
+                  <%= content_tag(:span, app_name, class: "text-2xl font-bold") %>
+                <% else %>
+                  <%= image_tag "logo.svg", alt: "", class: "w-22 h-8 mr-3" %>
+                <% end %>
+              </a>
+            </div>
+            <div class="flex items-center text-sm">
+              <%= button_to logout_path, method: :post, data: {turbo: false}, class: "flex items-center text-gray-900" do %>
+                <div class="inline-flex items-center">
+                  <i class="material-icons">logout</i>
                 </div>
               <% end %>
-            </li>
-            <li>
-              <%= link_to lifetimes_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
-                <div class="inline-flex items-center text-sm">
-                  <%= content_tag(:span, "Lifetimes", class: "ml-2") %>
-                </div>
-              <% end %>
-            </li>
-            <li>
-              <%= link_to audit_logs_path, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
-                <div class="inline-flex items-center text-sm">
-                  <%= content_tag(:span, "Audit logs", class: "ml-2") %>
-                </div>
-              <% end %>
-            </li>
-            <li>
-              <%= link_to logout_path, data: { turbo_method: :post }, class: "flex items-center p-1 text-gray-900 rounded-md hover:bg-gray-100 bg-gray-50" do %>
-                <div class="inline-flex items-center text-sm">
-                  <%= content_tag(:span, "Sign out", class: "ml-2") %>
-                </div>
-              <% end %>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </header>
 
-      <main>
-        <div class="min-w-screen min-h-screen flex justify-center overflow-hidden">
-          <div class="w-full lg:w-5/6">     
+      <div class="flex flex-1 relative">
+        <aside data-reveal-target="item" class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full border-r bg-white">
+          <div class="h-full px-3 pb-4 overflow-y-auto">
+            <ul class="space-y-1 font-medium">
+              <li>
+                <%= link_to root_path, class: ["flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100", ("bg-gray-100" if request.path == root_path)] do %>
+                  <%= content_tag(:i, "gpp_maybe", class: "material-icons") %>
+                  <%= content_tag(:span, "Alerts", class: "flex-1 ml-3 whitespace-nowrap") %>
+                <% end %>
+              </li>
+
+              <li>
+                <%= link_to lifetimes_path, class: ["flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100", ("bg-gray-100" if request.path == lifetimes_path)] do %>
+                  <%= content_tag(:i, "timer", class: "material-icons") %>
+                  <%= content_tag(:span, "Lifetimes", class: "flex-1 ml-3 whitespace-nowrap") %>
+                <% end %>
+              </li>
+
+              <li>
+                <%= link_to audit_logs_path, class: ["flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100", ("bg-gray-100" if request.path == audit_logs_path)] do %>
+                  <%= content_tag(:i, "manage_search", class: "material-icons") %>
+                  <%= content_tag(:span, "Audit logs", class: "flex-1 ml-3 whitespace-nowrap") %>
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <main class="flex-1 overflow-auto">
+          <div class="w-full h-full p-4">
             <%= render partial: "shared/flash" %>
             <%= yield %>
             <%= turbo_frame_tag "remote_modal" %>
           </div>
-        </div> 
-      </main>
+        </main>
+      </div>
+    </div>
+
   </body>
 
 </html>

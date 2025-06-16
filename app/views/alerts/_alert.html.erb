@@ -1,5 +1,5 @@
 <tr id="<%= dom_id(alert) %>" class="border-b border-gray-200 hover:bg-gray-100">
-  <td class="px-5 text-left whitespace-nowrap">
+  <td class="px-5 text-left whitespace-nowrap hidden md:table-cell">
     <% if alert.severity == 'Critical' %>
       <span class="text-red-600 px-1 rounded-full text-xs font-semibold"><%= alert.severity %></span>
     <% elsif alert.severity == 'High' %>
@@ -10,8 +10,8 @@
       <span class="text-green-600 px-1 rounded-full text-xs font-semibold"><%= alert.severity %></span>
     <% end %>
   </td>
-  <td class="px-3 text-left">
-    <div class="flex items-center">
+  <td class="px-3 text-left py-2">
+    <div class="flex items-center break-all">
       <%# <div class="mr-2">
         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
               width="24" height="24"
@@ -37,13 +37,13 @@
     </div>
   </td>
 
-  <td class="px-4 text-left">
+  <td class="px-4 text-left hidden md:table-cell">
     <div class="flex text-xs font-medium text-gray-500 break-all">
       <span><%= alert.source%></span>
     </div>
   </td>
 
-  <td class="px-4 text-center">
+  <td class="px-4 text-center hidden md:table-cell">
     <div class="flex w-full text-xs font-medium text-gray-500 break-all">
       <% if alert.issue.to_s.match?(URI::DEFAULT_PARSER.make_regexp) %>
         <div class="mr-1">
@@ -66,8 +66,8 @@
     </div>
   </td-->
 
-  <td class="px-6 text-center">
-    <div class="flex item-center justify-center hidden md:block">
+  <td class="px-6 text-center hidden md:table-cell">
+    <div class="flex item-center justify-center">
       <div class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
         <div id="<%= dom_id alert %>">
             <%= check_box_tag "alert_ids[]",
