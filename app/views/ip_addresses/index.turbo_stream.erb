@@ -1,0 +1,13 @@
+<%= turbo_stream.append :ip_addresses do %>
+  <% @ip_addresses.each do |ip_address| %>
+    <%= render "ip_address", ip_address: ip_address %>
+  <% end %>
+<% end %>
+
+<% if @pagy.next.present? %>
+  <%= turbo_stream.replace :pagination do %>
+    <%= turbo_frame_tag :pagination, 
+                        loading: :lazy,
+                        src: ip_addresses_path(format: :turbo_stream, page: @pagy.next, q: params[:q]&.to_unsafe_h) %>
+  <% end %>
+<% end %>

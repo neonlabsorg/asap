@@ -41,5 +41,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :ip_addresses, only: %i[index]
+  resources :domain_names, only: %i[index]
+
   root "alerts#index"
 end

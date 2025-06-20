@@ -1,0 +1,13 @@
+<%= turbo_stream.append :domain_names do %>
+  <% @domain_names.each do |domain_name| %>
+    <%= render "domain_name", domain_name: domain_name %>
+  <% end %>
+<% end %>
+
+<% if @pagy.next.present? %>
+  <%= turbo_stream.replace :pagination do %>
+    <%= turbo_frame_tag :pagination, 
+                        loading: :lazy,
+                        src: domain_names_path(format: :turbo_stream, page: @pagy.next, q: params[:q]&.to_unsafe_h) %>
+  <% end %>
+<% end %>
