@@ -37,8 +37,12 @@ Rails.application.routes.draw do
       post '/alerts', to: 'alerts#create'
       post '/arrange_alerts', to: 'alerts#arrange_alerts'
       resources :ip_addresses, only: [:index, :create, :update, :destroy]
+      resources :domain_names, only: [:index, :create, :update, :destroy]
     end
   end
+
+  resources :ip_addresses, only: %i[index]
+  resources :domain_names, only: %i[index]
 
   root "alerts#index"
 end
